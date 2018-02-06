@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.python.framework import ops
 from cnn_utils import *
+import sys
 
 # loading the dataset
 X_train_orig, Y_train_orig, X_test_orig, Y_test_orig, classes = load_dataset()
@@ -78,7 +79,7 @@ def compute_cost(Z3, Y):
 
 
 def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.009,
-          num_epochs = 10, minibatch_size = 64, print_cost = True):
+          num_epochs = 100, minibatch_size = 64, print_cost = True):
     
     # to be able to rerun the model without overwriting tf variables
     ops.reset_default_graph()
@@ -98,7 +99,12 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.009,
     parameters = initialize_parameters()
     Z3 = forward_propagation(X, parameters)
     cost = compute_cost(Z3, Y)
-    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+
+    # split .minimize(cost) to...
+    grads_and_vars = optimizer.compute_gradients(cost)
+    opt_operation = optimizer.apply_gradients(grads_and_vars)
+
     init = tf.global_variables_initializer()
 
     with tf.Session() as sess:
@@ -113,7 +119,17 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.009,
 
             for minibatch in minibatches:
                 (minibatch_X, minibatch_Y) = minibatch
-                _ , temp_cost = sess.run([optimizer, cost], feed_dict={X:minibatch_X, Y:minibatch_Y})
+                
+                # get gradients computed
+                gradients = sess.run(grads_and_vars, feed_dict={X:minibatch_X, Y:minibatch_Y})
+                # print(gradients[0])
+                # sys.exit(0)
+
+                # apply the gradients
+                sess.run(opt_operation, feed_dict={X:minibatch_X, Y:minibatch_Y})
+
+                # compute minibatch cost
+                temp_cost = sess.run(cost, feed_dict={X:minibatch_X, Y:minibatch_Y})
                 
                 # update the cost
                 minibatch_cost += temp_cost / num_minibatches
@@ -150,6 +166,7 @@ def model(X_train, Y_train, X_test, Y_test, learning_rate = 0.009,
         return train_accuracy, test_accuracy, parameters
 
 
-_, _, parameters = model(X_train, Y_train, X_test, Y_test, num_epochs = 1)
+_, _, parameters = model(X_train, Y_train, X_test, Y_test, 
+                        num_epochs = 50, learning_rate=0.01, minibatch_size=64)
 
     
