@@ -1,7 +1,7 @@
 '''
 Toy DNN to classify images from Simpsons dataset: img has Homer(0) or Margie(1)?
 Dataset comes from Kaggle datasets (I just got Homer and Margie images)
-I selected only images with format 480 X 320
+I selected only images with format 480 X 320 and then resized it to 120 x 60
 '''
 
 import time, sys, os
@@ -110,7 +110,30 @@ pred_train = predict(X_train, Y_train, parameters)
 
 pred_test = predict(X_test, Y_test, parameters)
 
-print_mislabeled_images(classes, test_x, test_y, pred_test)
+# print_mislabeled_images(classes, test_x, test_y, pred_test)
+
+#### RESULTS
+'''
+(452, 28800)
+(452, 1)
+(113, 28800)
+(113, 1)
+
+Cost after iteration 0: 0.696929
+Cost after iteration 100: 0.437315
+Cost after iteration 200: 0.326806
+Cost after iteration 300: 0.266513
+Cost after iteration 400: 0.228604
+Cost after iteration 500: 0.201916
+Cost after iteration 600: 0.181477
+Cost after iteration 700: 0.164853
+Cost after iteration 800: 0.150721
+Cost after iteration 900: 0.138403
+
+Accuracy train_set: 0.96017699115
+Accuracy test_set: 0.929203539823
+
+'''
 
 
 
