@@ -6,7 +6,7 @@ from PIL import Image
 from scipy import ndimage
 import sys
 
-# here each line is an x'i (m, n_x)
+# here each line is an x input (m, n_x)
 train_set_x = np.array([
     [2, 4, 6, 8],
     [1, 3, 5, 7],
@@ -49,8 +49,6 @@ test_set_x = test_set_x.T / 100
 test_set_y = np.array([0, 0, 0, 1, 1, 1])
 test_set_y = test_set_y.reshape(1,6)
 
-print(train_set_x.shape)
-print(train_set_y.shape)
 
 def sigmoid(z):
     s = 1 / (1 + np.exp(-z))
