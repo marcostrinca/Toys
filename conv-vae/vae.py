@@ -31,8 +31,12 @@ x = Conv2D(16, (3, 3), activation='relu')(x)
 x = UpSampling2D((2, 2))(x)
 decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
 
+# the output through the entire auto encoder
 autoencoder = Model(input_img, decoded)
 autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+
+# the output of the eoncder only
+encoder = Model(input_img, encoded)
 
 from keras.datasets import mnist
 import numpy as np
@@ -51,7 +55,6 @@ autoencoder.fit(x_train, x_train,
                 validation_data=(x_test, x_test))
 
 decoded_imgs = autoencoder.predict(x_test)
-
 n = 10
 plt.figure(figsize=(20, 4))
 for i in range(n):
@@ -63,7 +66,7 @@ for i in range(n):
     ax.get_yaxis().set_visible(False)
 
     # display reconstruction
-    ax = plt.subplot(2, n, i + n)
+    ax = plt.subplot(2, n, (i+1) + n)
     plt.imshow(decoded_imgs[i].reshape(28, 28))
     plt.gray()
     ax.get_xaxis().set_visible(False)
@@ -75,6 +78,7 @@ We can also have a look at the 128-dimensional encoded representations.
 These representations are 8x4x4, so we reshape them to 4x32 in order to 
 be able to display them as grayscale images.
 '''
+encoded_imgs = encoder.predict(x_test)
 n = 10
 plt.figure(figsize=(20, 8))
 for i in range(n):
