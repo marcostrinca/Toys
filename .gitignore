@@ -8,3 +8,4 @@ _datasets/cifar-10/data_batch_5
 _datasets/cifar-10/readme.html
 _datasets/cifar-10/test_batch
 cnn-concepts/tmp/*
+.DS_Store
